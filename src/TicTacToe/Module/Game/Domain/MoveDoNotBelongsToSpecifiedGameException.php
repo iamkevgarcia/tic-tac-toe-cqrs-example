@@ -4,6 +4,6 @@ namespace Kev\TicTacToe\Module\Game\Domain;
 
 use RuntimeException;
 
-class MoveDoNotBelongsToSpecifiedGameException extends RuntimeException
+final class MoveDoNotBelongsToSpecifiedGameException extends RuntimeException
 {
 }

@@ -4,6 +4,6 @@ namespace Kev\TicTacToe\Module\Game\Domain;
 
 use RuntimeException;
 
-final class PlayerCanNotMakeConsecutiveMovesException extends RuntimeException
+final class GameNotFoundException extends RuntimeException
 {
 }

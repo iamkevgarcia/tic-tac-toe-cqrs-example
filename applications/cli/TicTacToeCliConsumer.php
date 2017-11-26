@@ -2,7 +2,13 @@
 
 declare(strict_types=1);
 
+use Kev\Infraestructure\Bus\Query\QueryBusSync;
 use Kev\Shared\Domain\Bus\Command\Command;
+use Kev\Shared\Domain\Bus\Query\Query;
+use Kev\Shared\Domain\Bus\Query\Response;
+use Kev\TicTacToe\Module\Game\Application\Find\FindGameQuery;
+use Kev\TicTacToe\Module\Game\Application\Find\FindGameQueryHandler;
+use Kev\TicTacToe\Module\Game\Application\Find\GameFinder;
 use Kev\TicTacToe\Module\Game\Application\Start\GameInitializer;
 use Kev\TicTacToe\Module\Game\Application\Start\StartGameCommand;
 use Kev\TicTacToe\Module\Game\Application\Start\StartGameCommandHandler;
@@ -23,11 +29,13 @@ use Kev\TicTacToe\Module\User\Infraestructure\Persistence\MySqlUserRepository;
 
 class TicTacToeCliConsumer
 {
-    private $bus;
+    private $commandBus;
+    private $queryBus;
 
     public function __construct()
     {
-        $this->bus = new SyncCommandBus();
+        $this->commandBus = new SyncCommandBus();
+        $this->queryBus = new QueryBusSync();
     }
 
     public function init(): void
@@ -36,6 +44,7 @@ class TicTacToeCliConsumer
         $this->registerDeleteUserUseCase();
         $this->registerStartGameUseCase();
         $this->registerMakeAMoveGameUseCase();
+        $this->registerFindGameUseCase();
     }
 
     private function registerCreateUserUseCase(): void
@@ -44,7 +53,7 @@ class TicTacToeCliConsumer
         $creator    = new UserCreator($repo, new SyncDomainEventPublisher());
         $handler    = new CreateUserCommandHandler($creator);
 
-        $this->bus->register(CreateUserCommand::class, $handler);
+        $this->commandBus->register(CreateUserCommand::class, $handler);
     }
 
     private function registerDeleteUserUseCase(): void
@@ -53,29 +62,43 @@ class TicTacToeCliConsumer
         $creator    = new UserRemover($repo, new SyncDomainEventPublisher());
         $handler    = new DeleteUserCommandHandler($creator);
 
-        $this->bus->register(DeleteUserCommand::class, $handler);
+        $this->commandBus->register(DeleteUserCommand::class, $handler);
     }
 
     public function dispatch(Command $command): void
     {
-        $this->bus->dispatch($command);
+        $this->commandBus->dispatch($command);
     }
 
-    private function registerStartGameUseCase()
+    private function registerStartGameUseCase(): void
     {
         $repo           = new DynamoDBGameRepository();
         $initializer    = new GameInitializer($repo, new SyncDomainEventPublisher());
         $handler        = new StartGameCommandHandler($initializer);
 
-        $this->bus->register(StartGameCommand::class, $handler);
+        $this->commandBus->register(StartGameCommand::class, $handler);
     }
 
-    private function registerMakeAMoveGameUseCase()
+    private function registerMakeAMoveGameUseCase(): void
     {
         $repo       = new RedisMoveRepository();
         $maker      = new MoveMaker($repo, new SyncDomainEventPublisher());
         $handler    = new MakeAMoveCommandHandler($maker);
 
-        $this->bus->register(MakeAMoveCommand::class, $handler);
+        $this->commandBus->register(MakeAMoveCommand::class, $handler);
+    }
+
+    private function registerFindGameUseCase(): void
+    {
+        $repo       = new DynamoDBGameRepository();
+        $finder     = new GameFinder($repo);
+        $handler    = new FindGameQueryHandler($finder);
+
+        $this->queryBus->register(FindGameQuery::class, $handler);
+    }
+
+    public function ask(Query $query): Response
+    {
+        return $this->queryBus->ask($query);
     }
 }

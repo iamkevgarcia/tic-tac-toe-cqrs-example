@@ -2,7 +2,7 @@
 
 declare (strict_types = 1);
 
-namespace Kev\Shared\Domain\Bus;
+namespace Kev\Shared\Domain;
 
 use Kev\Types\ValueObject\Uuid;
 

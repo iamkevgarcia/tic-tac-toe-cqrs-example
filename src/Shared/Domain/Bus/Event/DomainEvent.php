@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kev\Shared\Domain\Bus\Event;
 
 use Kev\Infraestructure\Bus\Event\Guard\DomainEventGuard;
-use Kev\Shared\Domain\Bus\Message;
+use Kev\Shared\Domain\Message;
 use Kev\Types\ValueObject\Uuid;
 use DateTimeImmutable;
 use InvalidArgumentException;

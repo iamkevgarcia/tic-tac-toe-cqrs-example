@@ -19,6 +19,6 @@ final class DynamoDBGameRepository implements GameRepository
 
     public function find(GameId $id): ?Game
     {
-        return Game::start($id, new PlayerId(Uuid::random()), new PlayerId(Uuid::random()));
+        return Game::start($id, new PlayerId(Uuid::random()->value()), new PlayerId(Uuid::random()->value()));
     }
 }
