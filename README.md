@@ -1,4 +1,4 @@
-# Tic Tac Toe CQRS Example
+# Tic Tac Toe CQRS Example [![Build Status](https://travis-ci.org/kev93/tic-tac-toe-cqrs-example.svg?branch=master)](https://travis-ci.org/kev93/tic-tac-toe-cqrs-example)
 
 ## Quick Start
 This is a simple tic tac toe app (only code that is prepared to manage games) made by following a simple CQRS architecture.
