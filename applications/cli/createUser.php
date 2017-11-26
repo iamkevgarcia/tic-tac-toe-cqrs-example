@@ -10,4 +10,5 @@ try {
     $app->dispatch(new CreateUserCommand(Uuid::random(), $id));
 } catch (\Exception $e) {
     error_log($e->getMessage(), $e->getCode());
+    exit(1);
 }

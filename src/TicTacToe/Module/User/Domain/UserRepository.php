@@ -10,4 +10,6 @@ interface UserRepository
     function save(User $user): void;
 
     function find(UserId $id): ?User;
+
+    function remove(User $user): void;
 }

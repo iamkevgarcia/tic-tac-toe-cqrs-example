@@ -41,4 +41,9 @@ class Uuid
     {
         return $this->value();
     }
+
+    public function equals(Uuid $uuid): bool
+    {
+        return $uuid->value() === $this->value();
+    }
 }

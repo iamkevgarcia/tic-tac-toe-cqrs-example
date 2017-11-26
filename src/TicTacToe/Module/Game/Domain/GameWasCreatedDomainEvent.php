@@ -15,6 +15,9 @@ final class GameWasCreatedDomainEvent extends DomainEvent
 
     protected function rules(): array
     {
-        return [];
+        return [
+            'xPlayerId' => ['string'],
+            'oPlayerId' => ['string'],
+        ];
     }
 }
