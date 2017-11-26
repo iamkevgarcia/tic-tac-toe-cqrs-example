@@ -73,7 +73,7 @@ class TicTacToeCliConsumer
     private function registerStartGameUseCase(): void
     {
         $repo           = new DynamoDBGameRepository();
-        $initializer    = new GameInitializer($repo, new SyncDomainEventPublisher());
+        $initializer    = new GameInitializer($repo, new SyncDomainEventPublisher(), new MySqlUserRepository());
         $handler        = new StartGameCommandHandler($initializer);
 
         $this->commandBus->register(StartGameCommand::class, $handler);
@@ -82,7 +82,7 @@ class TicTacToeCliConsumer
     private function registerMakeAMoveGameUseCase(): void
     {
         $repo       = new RedisMoveRepository();
-        $maker      = new MoveMaker($repo, new SyncDomainEventPublisher());
+        $maker      = new MoveMaker($repo, new SyncDomainEventPublisher(), new DynamoDBGameRepository());
         $handler    = new MakeAMoveCommandHandler($maker);
 
         $this->commandBus->register(MakeAMoveCommand::class, $handler);

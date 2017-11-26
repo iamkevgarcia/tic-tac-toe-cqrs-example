@@ -15,6 +15,12 @@ final class MySqlUserRepository implements UserRepository
         return User::create($id);
     }
 
+    function findOrFail(UserId $id): User
+    {
+        //TODO: Add here exception throwing if user not found
+        return User::create($id);
+    }
+
     public function save(User $user): void
     {
 

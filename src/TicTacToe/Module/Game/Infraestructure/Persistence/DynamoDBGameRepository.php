@@ -21,4 +21,11 @@ final class DynamoDBGameRepository implements GameRepository
     {
         return Game::start($id, new PlayerId(Uuid::random()->value()), new PlayerId(Uuid::random()->value()));
     }
+
+    public function findOrFail(GameId $id): Game
+    {
+        //TODO: Add exception throwing here if game not found
+        return Game::start($id, new PlayerId(Uuid::random()->value()), new PlayerId(Uuid::random()->value()));
+    }
+
 }

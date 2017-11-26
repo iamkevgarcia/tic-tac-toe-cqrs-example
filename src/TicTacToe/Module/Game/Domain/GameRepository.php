@@ -9,4 +9,6 @@ interface GameRepository
     function save(Game $user): void;
 
     function find(GameId $id): ?Game;
+
+    function findOrFail(GameId $id): Game;
 }

@@ -11,5 +11,7 @@ interface UserRepository
 
     function find(UserId $id): ?User;
 
+    function findOrFail(UserId $id): User;
+
     function remove(User $user): void;
 }
