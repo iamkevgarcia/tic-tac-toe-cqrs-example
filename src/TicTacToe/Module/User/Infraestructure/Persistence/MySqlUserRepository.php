@@ -17,7 +17,7 @@ final class MySqlUserRepository implements UserRepository
 
     public function save(User $user): void
     {
-        echo "saved";
+
     }
 
     public function remove(User $user): void

@@ -21,7 +21,7 @@ final class UserShould extends UnitTestCase
         User::create(new UserId('invalid'));
     }
 
-    /**QueryBus.php
+    /**
      * @test
      */
     public function have_game_created_domain_event_after_creating_new_user(): void

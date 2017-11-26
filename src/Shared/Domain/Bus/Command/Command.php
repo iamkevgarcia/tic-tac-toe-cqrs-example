@@ -4,7 +4,7 @@ declare (strict_types = 1);
 
 namespace Kev\Shared\Domain\Bus\Command;
 
-use Kev\Shared\Domain\Bus\Request;
+use Kev\Shared\Domain\Request;
 use Kev\Types\ValueObject\Uuid;
 
 abstract class Command extends Request
