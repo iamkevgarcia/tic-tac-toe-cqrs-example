@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+  php:
+    image: php:7.1.11
+    container_name: tic-tac-toe-php
+    tty: true
+    volumes:
+      - "$PWD:/app"
+  composer:
+    image: composer:1.5.2
+    volumes_from:
+      - php
+    links:
+      - php
+    command: composer install
+
+c

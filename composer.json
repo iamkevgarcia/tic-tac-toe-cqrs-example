@@ -1,0 +1,21 @@
+{
+  "name": "tic-tac-toe-service",
+  "type": "project",
+  "description": "Tic tac toe code prepared to save games",
+  "require": {
+    "php": "7.1.11"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "6.4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Kev\\": ["src/"]
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "CodelyTv\\Applications\\Bootstrap\\": "features/bootstrap"
+    }
+  }
+}
