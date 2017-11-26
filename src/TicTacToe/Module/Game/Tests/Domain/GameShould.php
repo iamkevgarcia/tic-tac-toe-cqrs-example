@@ -25,7 +25,7 @@ final class GameShould extends UnitTestCase
     /**
      * @test
      */
-    public function have_game_created_domain_event_after_creating_new_game(): void
+    public function have_game_created_domain_event_after_creating_a_new_one(): void
     {
         $game = Game::start(
             new GameId(Uuid::random()->value()),
@@ -69,6 +69,42 @@ final class GameShould extends UnitTestCase
 
     /**
      * @test
+     * @expectedException Kev\TicTacToe\Module\Game\Domain\PositionAlreadyTakenException
+     */
+    public function throw_an_exception_when_trying_to_add_move_in_the_same_position(): void
+    {
+        $playerIdString = Uuid::random()->value();
+        $gameIdString   = Uuid::random()->value();
+        $game = Game::start(
+            new GameId($gameIdString),
+            new PlayerId($playerIdString),
+            new PlayerId(Uuid::random()->value())
+        );
+
+        $game->addMove(MoveStub::with($game->oPlayerId()->value(), $game->id()->value(), 1));
+        $game->addMove(MoveStub::with($game->xPlayerId()->value(), $game->id()->value(), 1));
+    }
+
+    /**
+     * @test
+     * @expectedException Kev\TicTacToe\Module\Game\Domain\PlayerCanNotMakeConsecutiveMovesException
+     */
+    public function throw_an_exception_when_a_player_is_making_consecutive_moves(): void
+    {
+        $playerIdString = Uuid::random()->value();
+        $gameIdString   = Uuid::random()->value();
+        $game = Game::start(
+            new GameId($gameIdString),
+            new PlayerId($playerIdString),
+            new PlayerId(Uuid::random()->value())
+        );
+
+        $game->addMove(MoveStub::with($game->oPlayerId()->value(), $game->id()->value(), 1));
+        $game->addMove(MoveStub::with($game->oPlayerId()->value(), $game->id()->value(), 2));
+    }
+
+    /**
+     * @test
      * @expectedException Kev\TicTacToe\Module\Game\Domain\GameMovesExceededException
      */
     public function throw_an_exception_when_trying_to_add_more_moves_than_allowed(): void
@@ -83,14 +119,73 @@ final class GameShould extends UnitTestCase
 
         $this->addNMoves(
            $game,
-            20
+            9
         );
     }
 
     private function addNMoves(Game $game, int $numberOfMoves)
     {
+        $oPlayer = $game->oPlayerId()->value();
+        $xPlayer = $game->xPlayerId()->value();
         for ($i = 0; $i < $numberOfMoves; $i++) {
-            $game->addMove(MoveStub::with($game->oPlayerId()->value(), $game->id()->value()));
+            $game->addMove(MoveStub::with(($i % 2) ? $xPlayer : $oPlayer, $game->id()->value(), $i));
         }
+    }
+
+    /**
+     * @test
+     */
+    public function have_a_winner_after_adding_three_moves_that_makes_a_winning_combination(): void
+    {
+        $playerIdString = Uuid::random()->value();
+        $gameIdString   = Uuid::random()->value();
+        $game = Game::start(
+            new GameId($gameIdString),
+            new PlayerId($playerIdString),
+            new PlayerId(Uuid::random()->value())
+        );
+
+        $game->addMove(MoveStub::with($game->xPlayerId()->value(), $game->id()->value(), 0));
+        $game->addMove(MoveStub::with($game->oPlayerId()->value(), $game->id()->value(), 5));
+        $game->addMove(MoveStub::with($game->xPlayerId()->value(), $game->id()->value(), 4));
+        $game->addMove(MoveStub::with($game->oPlayerId()->value(), $game->id()->value(), 1));
+        $game->addMove(MoveStub::with($game->xPlayerId()->value(), $game->id()->value(), 8));
+
+
+        $this->assertNotNull($game->winner());
+        $this->assertTrue($game->isFinished());
+    }
+
+    /**
+     * @test
+     */
+    public function have_a_draw_after_a_game_without_winning_combination(): void
+    {
+        $playerIdString = Uuid::random()->value();
+        $gameIdString   = Uuid::random()->value();
+        $game = Game::start(
+            new GameId($gameIdString),
+            new PlayerId($playerIdString),
+            new PlayerId(Uuid::random()->value())
+        );
+
+        $game = $this->makeADraw($game);
+
+        $this->assertNull($game->winner());
+        $this->assertTrue($game->isFinished());
+    }
+
+    private function makeADraw(Game $game): Game
+    {
+        $game->addMove(MoveStub::with($game->xPlayerId()->value(), $game->id()->value(), 0));
+        $game->addMove(MoveStub::with($game->oPlayerId()->value(), $game->id()->value(), 8));
+        $game->addMove(MoveStub::with($game->xPlayerId()->value(), $game->id()->value(), 2));
+        $game->addMove(MoveStub::with($game->oPlayerId()->value(), $game->id()->value(), 1));
+        $game->addMove(MoveStub::with($game->xPlayerId()->value(), $game->id()->value(), 6));
+        $game->addMove(MoveStub::with($game->oPlayerId()->value(), $game->id()->value(), 7));
+        $game->addMove(MoveStub::with($game->xPlayerId()->value(), $game->id()->value(), 5));
+        $game->addMove(MoveStub::with($game->oPlayerId()->value(), $game->id()->value(), 4));
+
+        return $game;
     }
 }
