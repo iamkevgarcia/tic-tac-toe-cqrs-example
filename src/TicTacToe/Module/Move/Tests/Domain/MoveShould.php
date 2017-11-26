@@ -15,6 +15,8 @@ use Kev\Types\ValueObject\Uuid;
 
 final class MoveShould extends UnitTestCase
 {
+    const MAX_POSITION = 8;
+
     /**
      * @test
      * @expectedException InvalidArgumentException
@@ -37,5 +39,19 @@ final class MoveShould extends UnitTestCase
         );
 
         $this->assertCount(1, $game->pullDomainEvents());
+    }
+
+    /**
+     * @test
+     * @expectedException Kev\TicTacToe\Module\Move\Domain\InvalidGivenPositionException
+     */
+    public function throw_an_exception_when_passing_invalid_position(): void
+    {
+        Move::make(
+            new MoveId(Uuid::random()->value()),
+            new GameId(Uuid::random()->value()),
+            new PlayerId(Uuid::random()->value()),
+            new Position(self::MAX_POSITION + 1)
+        );
     }
 }
