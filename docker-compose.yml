@@ -13,6 +13,5 @@ services:
       - php
     links:
       - php
-    command: composer install
+    command: bash -c "composer update && composer install"
 
-c
